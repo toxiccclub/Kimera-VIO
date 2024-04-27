@@ -70,15 +70,15 @@ pipeline {
                   sh 'python3 -m kimera_eval -l DEBUG run -n jenkins_euroc --minloglevel 0 $WORKSPACE/website/data && \
                      python3 -m kimera_eval evaluate -n jenkins_euroc $WORKSPACE/website/data && \
                      python3 -m kimera_eval website $WORKSPACE/website $WORKSPACE/website/data && \
-                     python3 -m kimera_eval summary $WORKSPACE/website/data/V1_01_easy/Euroc/results_vio.pickle \
-                                                    -o $WORKSPACE/website/data/V1_01_easy/Euroc/vio_performance.csv'
+                     python3 -m kimera_eval summary $WORKSPACE/website/data/V1_01_easy/Euroc/results_gt.pickle \
+                                                    -o $WORKSPACE/website/data/V1_01_easy/Euroc/gt_performance.csv'
                 }
               }
               post {
                 success {
                     // Plot VIO performance.
                     plot csvFileName: 'plot-vio-performance-per-build.csv',
-                         csvSeries: [[file: 'website/data/V1_01_easy/Euroc/vio_performance.csv']],
+                         csvSeries: [[file: 'website/data/V1_01_easy/Euroc/gt_performance.csv']],
                          group: 'Euroc Performance',
                          numBuilds: '30',
                          style: 'line',
