@@ -47,7 +47,7 @@ pipeline {
                              -Wno-unused-value \
                              -Wno-unused-variable"',
                            generator: 'Unix Makefiles', installation: 'InSearchPath',
-                           sourceDir: '.', steps: [[args: '-j$(nproc)']]
+                           sourceDir: '.', steps: [[args: '-j']]
               }
             }
             stage('Test') {
