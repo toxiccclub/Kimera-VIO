@@ -1,4 +1,4 @@
-FROM ubuntu:20.04
+FROM --platform=linux/arm64 ubuntu:22.04
 LABEL maintainer="mabate@mit.edu"
 
 # To avoid tzdata asking for geographic location...
@@ -9,8 +9,9 @@ WORKDIR $DIRPATH
 
 RUN apt-get update && apt-get install -y --no-install-recommends apt-utils
 RUN apt-get update && \
-    apt-get install -y \
-      build-essential \
+    apt-get install -y --fix-missing\
+    build-essential \
+      gcc-snapshot \
       cmake \
       gfortran \
       git \
@@ -38,7 +39,8 @@ RUN git clone https://github.com/borglab/gtsam.git && \
     git checkout 4.2 && \
     mkdir build && \
     cd build && \
-    cmake -DCMAKE_INSTALL_PREFIX=/usr/local \
+    cmake -DCMAKE_SYSTEM_PROCESSOR=arm64 \
+          -DCMAKE_INSTALL_PREFIX=/usr/local \
           -DGTSAM_BUILD_WITH_MARCH_NATIVE=OFF \
           -DGTSAM_BUILD_TESTS=OFF \
           -DGTSAM_BUILD_EXAMPLES_ALWAYS=OFF \
@@ -50,18 +52,19 @@ RUN git clone https://github.com/borglab/gtsam.git && \
           -DGTSAM_USE_SYSTEM_EIGEN=ON \
           -DGTSAM_USE_SYSTEM_METIS=ON \
           .. && \
-    make -j$(nproc) install
+    make -j 4 install
 
 # Install Open_GV
-RUN git clone https://github.com/marcusabate/opengv && \
+RUN git clone https://github.com/toxiccclub/opengv.git && \
     cd opengv && \
     git apply march_native_disable.patch && \
     mkdir build && \
     cd build && \
-    cmake -DCMAKE_BUILD_TYPE=Release \
+    cmake -DCMAKE_SYSTEM_PROCESSOR=arm64 \
+          -DCMAKE_BUILD_TYPE=Release \
           -DCMAKE_INSTALL_PREFIX=/usr/local \
           .. && \
-    make -j$(nproc) install
+    make -j 4 install
 
 # Install DBoW2
 COPY .patches/fix_vocab.patch dbow2.patch
@@ -70,8 +73,9 @@ RUN cd DBoW2 && \
     git apply ../dbow2.patch && \
     mkdir build && \
     cd build && \
-    cmake .. && \
-    make -j$(nproc) install
+    cmake -DCMAKE_SYSTEM_PROCESSOR=arm64 \
+          .. && \
+    make -j 4 install
 
 # Install RobustPGO
 ADD https://api.github.com/repos/MIT-SPARK/Kimera-RPGO/git/refs/heads/master version.json
@@ -79,8 +83,9 @@ RUN git clone https://github.com/MIT-SPARK/Kimera-RPGO.git
 RUN cd Kimera-RPGO && \
     mkdir build && \
     cd build && \
-    cmake .. && \
-    make -j$(nproc) install
+    cmake -DCMAKE_SYSTEM_PROCESSOR=arm64 \
+          ..  && \
+    make -j 4 install
 
 # Install Kimera-VIO-Evaluation
 RUN python3 -m pip install --upgrade pip
