@@ -17,7 +17,6 @@ RUN apt-get update && \
     apt-utils \
     build-essential \
     gcc-snapshot \
-    cmake \
     gfortran \
     git \
     libatlas-base-dev \
