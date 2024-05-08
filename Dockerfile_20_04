@@ -55,8 +55,6 @@ RUN cmake --version
 RUN apt-get update && \
     apt-get install -y --no-install-recommends --fix-missing\
     apt-utils \
-    build-essential \
-    gcc-snapshot \
     cmake \
     gfortran \
     git \
