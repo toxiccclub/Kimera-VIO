@@ -48,8 +48,8 @@ RUN mkdir /tmp/cmake && \
 # Устанавливаем необходимые зависимости для сборки CMake
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
-    ${C_COMPILER} \
-    ${CXX_COMPILER} \
+    gcc-9=9.4.0-1ubuntu2 \
+    g++-9=9.4.0-1ubuntu2 \
     && rm -rf /var/lib/apt/lists/*
 
 # Сборка и установка CMake с явным указанием компиляторов
