@@ -13,10 +13,6 @@ RUN apt-get update && \
     software-properties-common \
     && rm -rf /var/lib/apt/lists/*
 
-# Добавляем PPA (личный репозиторий пакетов) с нужной версией GCC
-RUN add-apt-repository ppa:ubuntu-toolchain-r/test && \
-    apt-get update
-
 # Устанавливаем необходимую версию GCC
 RUN apt-get install -y --no-install-recommends \
     gcc-9 \
