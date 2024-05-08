@@ -7,13 +7,41 @@ LABEL maintainer="mabate@mit.edu"
 # Устанавливаем переменную окружения, чтобы предотвратить запросы интерактивного ввода
 ENV DEBIAN_FRONTEND=noninteractive
 
-# Устанавливаем компиляторы
-ENV C_COMPILER gcc-9.4.0
-ENV CXX_COMPILER g++-9.4.0
+# Добавляем репозиторий с необходимой версией GCC
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+    software-properties-common \
+    && rm -rf /var/lib/apt/lists/*
 
+# Добавляем PPA (личный репозиторий пакетов) с нужной версией GCC
+RUN add-apt-repository ppa:ubuntu-toolchain-r/test && \
+    apt-get update
+
+# Устанавливаем необходимую версию GCC
+RUN apt-get install -y --no-install-recommends \
+    gcc-9 \
+    g++-9 \
+    && rm -rf /var/lib/apt/lists/*
+
+# Устанавливаем альтернативы для gcc и g++ на установленные версии
+RUN update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-9 90 && \
+    update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-9 90
+
+# Проверяем установленные версии GCC
+RUN gcc --version && \
+    g++ --version
+
+# Устанавливаем CMake
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+    cmake \
+    && rm -rf /var/lib/apt/lists/*
+
+# Проверяем установленную версию CMake
+RUN cmake --version
 # Обновляем список пакетов и устанавливаем базовые пакеты
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends --fix-missing\
+    apt-get install -y --no-install-recommends \
     apt-utils \
     build-essential \
     gcc-snapshot \
@@ -37,30 +65,6 @@ RUN apt-get update && \
     python3-tk \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
-
-# Загружаем исходный код CMake 3.21.0
-ADD https://cmake.org/files/v3.21/cmake-3.21.0.tar.gz /tmp/cmake.tar.gz
-
-# Распаковываем исходный код CMake
-RUN mkdir /tmp/cmake && \
-    tar -xzvf /tmp/cmake.tar.gz -C /tmp/cmake --strip-components=1
-
-# Устанавливаем необходимые зависимости для сборки CMake
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-    gcc-9=9.4.0-1ubuntu2 \
-    g++-9=9.4.0-1ubuntu2 \
-    && rm -rf /var/lib/apt/lists/*
-
-# Сборка и установка CMake с явным указанием компиляторов
-RUN cd /tmp/cmake && \
-    CC=${C_COMPILER} CXX=${CXX_COMPILER} ./configure && \
-    make -j$(nproc) && \
-    make install && \
-    rm -rf /tmp/cmake /tmp/cmake.tar.gz
-
-# Верификация установки CMake
-RUN cmake --version
 
 # Копируем патч для DBoW2
 COPY .patches/fix_vocab.patch dbow2.patch
