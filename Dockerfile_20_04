@@ -78,6 +78,9 @@ RUN apt-get update && \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
+RUN gcc --version && \
+    g++ --version
+
 # Копируем патч для DBoW2
 COPY .patches/fix_vocab.patch dbow2.patch
 
