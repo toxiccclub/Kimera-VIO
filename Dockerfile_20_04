@@ -53,7 +53,7 @@ RUN apt-get update && \
 RUN cmake --version
 # Обновляем список пакетов и устанавливаем базовые пакеты
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
+    apt-get install -y --no-install-recommends --fix-missing\
     apt-utils \
     build-essential \
     gcc-snapshot \
