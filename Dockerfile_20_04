@@ -7,6 +7,33 @@ LABEL maintainer="mabate@mit.edu"
 # Устанавливаем переменную окружения, чтобы предотвратить запросы интерактивного ввода
 ENV DEBIAN_FRONTEND=noninteractive
 
+RUN apt-get update && apt-get install -y --no-install-recommends apt-utils
+RUN apt-get update && \
+    apt-get install -y --fix-missing\
+    build-essential \
+      gcc-snapshot \
+      cmake \
+      gfortran \
+      git \
+      libatlas-base-dev \
+      libboost-all-dev \
+      libeigen3-dev \
+      libgflags-dev \
+      libgoogle-glog-dev \
+      libmetis-dev \
+      libopencv-dev \
+      libopencv-contrib-dev \
+      libtbb-dev \
+      pkg-config \
+      xvfb \
+      python3 \
+      python3-dev \
+      python3-pip \
+      python3-tk && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+
 # Добавляем репозиторий с необходимой версией GCC
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
@@ -26,6 +53,15 @@ RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 60C317803A41BA51845
 # Добавляем PPA (личный репозиторий пакетов) с нужной версией GCC
 RUN add-apt-repository "deb http://ppa.launchpad.net/ubuntu-toolchain-r/test/ubuntu jammy main"
 
+# Устанавливаем CMake
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+    cmake \
+    && rm -rf /var/lib/apt/lists/*
+
+# Устанавливаем альтернативы для cmake на установленную версию
+RUN update-alternatives --install /usr/bin/cmake cmake /usr/bin/cmake 1 --force
+
 # Обновляем список пакетов
 RUN apt-get update
 
@@ -43,41 +79,8 @@ RUN update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-9 90 && \
 RUN gcc --version && \
     g++ --version
 
-# Устанавливаем CMake
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-    cmake \
-    && rm -rf /var/lib/apt/lists/*
-
 # Проверяем установленную версию CMake
 RUN cmake --version
-# Обновляем список пакетов и устанавливаем базовые пакеты
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends --fix-missing\
-    apt-utils \
-    cmake \
-    gfortran \
-    git \
-    libatlas-base-dev \
-    libboost-all-dev \
-    libeigen3-dev \
-    libgflags-dev \
-    libgoogle-glog-dev \
-    libmetis-dev \
-    libopencv-dev \
-    libopencv-contrib-dev \
-    libtbb-dev \
-    pkg-config \
-    xvfb \
-    python3 \
-    python3-dev \
-    python3-pip \
-    python3-tk \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
-
-RUN gcc --version && \
-    g++ --version
 
 # Копируем патч для DBoW2
 COPY .patches/fix_vocab.patch dbow2.patch
