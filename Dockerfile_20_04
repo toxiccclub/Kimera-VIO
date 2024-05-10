@@ -51,9 +51,6 @@ RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 60C317803A41BA51845
 # Добавляем PPA (личный репозиторий пакетов) с нужной версией GCC
 RUN add-apt-repository "deb http://ppa.launchpad.net/ubuntu-toolchain-r/test/ubuntu jammy main"
 
-# Устанавливаем альтернативы для cmake на установленную версию
-RUN update-alternatives --install /usr/bin/cmake cmake /usr/bin/cmake 1 --force
-
 # Обновляем список пакетов
 RUN apt-get update
 
