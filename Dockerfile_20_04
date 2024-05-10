@@ -63,10 +63,6 @@ RUN apt-get install -y --no-install-recommends \
     g++-9 \
     && rm -rf /var/lib/apt/lists/*
 
-# Устанавливаем альтернативы для gcc и g++ на установленные версии
-RUN update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-9 90 && \
-    update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-9 90
-
 # Устанавливаем CMake
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
