@@ -51,12 +51,6 @@ RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 60C317803A41BA51845
 # Добавляем PPA (личный репозиторий пакетов) с нужной версией GCC
 RUN add-apt-repository "deb http://ppa.launchpad.net/ubuntu-toolchain-r/test/ubuntu jammy main"
 
-# Устанавливаем CMake
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-    cmake \
-    && rm -rf /var/lib/apt/lists/*
-
 # Устанавливаем альтернативы для cmake на установленную версию
 RUN update-alternatives --install /usr/bin/cmake cmake /usr/bin/cmake 1 --force
 
@@ -72,6 +66,12 @@ RUN apt-get install -y --no-install-recommends \
 # Устанавливаем альтернативы для gcc и g++ на установленные версии
 RUN update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-9 90 && \
     update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-9 90
+
+# Устанавливаем CMake
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+    cmake \
+    && rm -rf /var/lib/apt/lists/*
 
 # Проверяем установленные версии GCC
 RUN gcc --version && \
