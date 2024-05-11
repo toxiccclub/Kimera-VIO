@@ -48,7 +48,7 @@ pipeline {
                              -Wno-unused-value \
                              -Wno-unused-variable"',
                            generator: 'Unix Makefiles', installation: 'InSearchPath',
-                           sourceDir: '.', steps: [[args: '-j 1']]
+                           sourceDir: '.', steps: [[args: '-j 4']]
               }
             }
             stage('Test') {
