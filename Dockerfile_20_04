@@ -101,3 +101,4 @@ RUN python3 -m pip install --upgrade pip
 ADD https://api.github.com/repos/MIT-SPARK/Kimera-VIO-Evaluation/git/refs/heads/fix/python3 version.json
 RUN python3 -m pip install git+https://github.com/MIT-SPARK/Kimera-VIO-Evaluation.git@fix/python3
 RUN opencv_version
+RUN apt-get update && apt-get install -y libopencv-viz-dev
