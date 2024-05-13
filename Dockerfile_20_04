@@ -103,5 +103,40 @@ RUN git clone https://github.com/MIT-SPARK/Kimera-RPGO.git && \
           ..  && \
     make -j$(nproc) install
 
-RUN git clone https://github.com/MIT-SPARK/Kimera-VIO.git
-RUN cd Kimera-VIO && mkdir build && cd build && cmake -DCMAKE_SYSTEM_PROCESSOR=arm64 -DCMAKE_CXX_FLAGS="-march=armv8-a" .. && make -j$(nproc)
+# Установка зависимостей OpenCV
+RUN apt-get update && \
+    apt-get install -y \
+    libopenjpip7 \
+    libopenjp2-tools \
+    libopenjpip-dec-server \
+    libopenjpip-server
+
+# Клонирование репозиториев OpenCV и OpenCV_contrib
+RUN git clone https://github.com/opencv/opencv.git && \
+    git clone https://github.com/opencv/opencv_contrib.git && \
+    cd opencv_contrib && \
+    git checkout tags/4.5.5 && \
+    cd .. && \
+    cd opencv && \
+    git checkout tags/4.5.5
+
+# Создание и переход в каталог сборки
+RUN mkdir -p opencv/build && \
+    cd opencv/build
+
+# Настройка сборки OpenCV с помощью CMake
+RUN cmake \
+    -DCMAKE_INSTALL_PREFIX=/usr/local \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DWITH_TBB=ON \
+    -DWITH_VTK=ON \
+    -DOPENCV_EXTRA_MODULES_PATH=/opencv_contrib/modules \
+    ..
+
+# Сборка и установка OpenCV
+RUN make -j$(nproc) install
+
+# Install Kimera-VIO-Evaluation
+RUN python3 -m pip install --upgrade pip
+ADD https://api.github.com/repos/MIT-SPARK/Kimera-VIO-Evaluation/git/refs/heads/fix/python3 version.json
+RUN python3 -m pip install git+https://github.com/MIT-SPARK/Kimera-VIO-Evaluation.git@fix/python3
