@@ -134,10 +134,8 @@ RUN cd opencv/build && \
     -DWITH_TBB=ON \
     -DWITH_VTK=ON \
     -DOPENCV_EXTRA_MODULES_PATH=/opencv_contrib/modules \
-    ..
-
-# Сборка и установка OpenCV
-RUN make -j$(nproc) install
+    .. && \
+make -j$(nproc) install
 
 # Install Kimera-VIO-Evaluation
 RUN python3 -m pip install --upgrade pip
