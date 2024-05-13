@@ -41,6 +41,17 @@ RUN apt-get update && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
+# Скачиваем и устанавливаем Boost
+RUN wget https://boostorg.jfrog.io/artifactory/main/release/1.82.0/source/boost_1_82_0.tar.gz && \
+    tar xf boost_1_82_0.tar.gz && \
+    rm boost_1_82_0.tar.gz && \
+    cd boost_1_82_0 && \
+    ./bootstrap.sh --prefix=/usr/local/boost && \
+    ./b2 install
+
+# Экспортируем переменную среды BOOST_ROOT
+ENV BOOST_ROOT /usr/local/boost
+
 # Копируем патч для DBoW2
 COPY .patches/fix_vocab.patch dbow2.patch
 
@@ -69,7 +80,7 @@ RUN git clone https://github.com/borglab/gtsam.git && \
           -DBUILD_EXAMPLES=ON \
           -DBUILD_VIZ=ON \
           .. && \
-    make -j 4 install
+    make -j$(nproc) install
 
 # Установка зависимостей OpenCV
 RUN apt-get update && \
@@ -101,6 +112,7 @@ RUN cd opencv/build && \
     -DCMAKE_BUILD_TYPE=Release \
     -DWITH_TBB=ON \
     -DWITH_VTK=ON \
+    -DBUILD_VIZ=ON \
     -DOPENCV_EXTRA_MODULES_PATH=/opencv_contrib/modules \
     .. && \
 make -j$(nproc) install
@@ -116,7 +128,7 @@ RUN git clone https://github.com/toxiccclub/opengv.git && \
           -DCMAKE_INSTALL_PREFIX=/usr/local \
           -DCMAKE_CXX_FLAGS="-march=armv8-a" \
           .. && \
-    make -j 4 install
+    make -j$(nproc) install
 
 # Клонируем репозиторий DBoW2 и устанавливаем его
 RUN git clone https://github.com/dorian3d/DBoW2.git && \
