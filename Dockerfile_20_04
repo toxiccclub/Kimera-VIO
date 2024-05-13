@@ -126,6 +126,8 @@ RUN mkdir -p opencv/build && \
 
 # Настройка сборки OpenCV с помощью CMake
 RUN cmake \
+    -DCMAKE_SYSTEM_PROCESSOR=arm64 \
+    -DCMAKE_CXX_FLAGS="-march=armv8-a" \
     -DCMAKE_INSTALL_PREFIX=/usr/local \
     -DCMAKE_BUILD_TYPE=Release \
     -DWITH_TBB=ON \
