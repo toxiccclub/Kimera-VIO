@@ -160,5 +160,6 @@ RUN git clone https://github.com/toxiccclub/Kimera-VIO.git Kimera-VIO && \
     cd build && \
     cmake -DCMAKE_SYSTEM_PROCESSOR=arm64 \
           -DCMAKE_CXX_FLAGS="-march=armv8-a" \
+          -DCMAKE_INSTALL_PREFIX=/usr/local \
           .. && \
     make -j$(nproc)
