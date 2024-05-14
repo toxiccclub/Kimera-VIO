@@ -29,7 +29,11 @@ RUN apt-get update && \
       libgtk-3-dev \
       libparmetis-dev \
       libatlas-base-dev \
-      libtbb-dev \
+      libtbb2-dev \
+      libvtk9-dev \
+      qtbase5-dev \
+      libqt5opengl5-dev \
+      libgl1-mesa-dev \
       pkg-config \
       wget \
       tar \
@@ -82,41 +86,6 @@ RUN git clone https://github.com/borglab/gtsam.git && \
           .. && \
     make -j$(nproc) install
 
-# Установка зависимостей OpenCV
-RUN apt-get update && \
-    apt-get install -y \
-    libopenjpip7 \
-    libopenjp2-tools \
-    libopenjpip-dec-server \
-    libopenjpip-server
-
-# Клонирование репозиториев OpenCV и OpenCV_contrib
-RUN git clone https://github.com/opencv/opencv.git && \
-    git clone https://github.com/opencv/opencv_contrib.git && \
-    cd opencv_contrib && \
-    git checkout tags/4.5.5 && \
-    cd .. && \
-    cd opencv && \
-    git checkout tags/4.5.5
-
-# Создание и переход в каталог сборки
-RUN mkdir -p opencv/build && \
-    cd opencv/build
-
-# Настройка сборки OpenCV с помощью CMake
-RUN cd opencv/build && \
-    cmake \
-    -DCMAKE_SYSTEM_PROCESSOR=arm64 \
-    -DCMAKE_CXX_FLAGS="-march=armv8-a" \
-    -DCMAKE_INSTALL_PREFIX=/usr/local \
-    -DCMAKE_BUILD_TYPE=Release \
-    -DWITH_TBB=ON \
-    -DWITH_VTK=ON \
-    -DBUILD_VIZ=ON \
-    -DOPENCV_EXTRA_MODULES_PATH=/opencv_contrib/modules \
-    .. && \
-make -j$(nproc) install
-
 # Загружаем версию разработки репозитория Open_GV
 RUN git clone https://github.com/toxiccclub/opengv.git && \
     cd opengv && \
@@ -153,6 +122,41 @@ RUN git clone https://github.com/MIT-SPARK/Kimera-RPGO.git && \
           -DCMAKE_INSTALL_PREFIX=/usr/local -DCMAKE_BUILD_TYPE=Release \
           ..  && \
     make -j$(nproc) install
+
+# Установка зависимостей OpenCV
+RUN apt-get update && \
+    apt-get install -y \
+    libopenjpip7 \
+    libopenjp2-tools \
+    libopenjpip-dec-server \
+    libopenjpip-server
+
+# Клонирование репозиториев OpenCV и OpenCV_contrib
+RUN git clone https://github.com/opencv/opencv.git && \
+    git clone https://github.com/opencv/opencv_contrib.git && \
+    cd opencv_contrib && \
+    git checkout tags/4.5.5 && \
+    cd .. && \
+    cd opencv && \
+    git checkout tags/4.5.5
+
+# Создание и переход в каталог сборки
+RUN mkdir -p opencv/build && \
+    cd opencv/build
+
+# Настройка сборки OpenCV с помощью CMake
+RUN cd opencv/build && \
+    cmake \
+    -DCMAKE_SYSTEM_PROCESSOR=arm64 \
+    -DCMAKE_CXX_FLAGS="-march=armv8-a" \
+    -DCMAKE_INSTALL_PREFIX=/usr/local \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DWITH_TBB=ON \
+    -DWITH_VTK=ON \
+    -DBUILD_VIZ=ON \
+    -DOPENCV_EXTRA_MODULES_PATH=/opencv_contrib/modules \
+    .. && \
+make -j$(nproc) install
 
 # Install Kimera-VIO-Evaluation
 RUN python3 -m pip install --upgrade pip
