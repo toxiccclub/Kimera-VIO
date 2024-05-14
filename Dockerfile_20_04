@@ -160,5 +160,5 @@ RUN git clone git@github.com:MIT-SPARK/Kimera-VIO.git Kimera-VIO && \
     cd build && \
     cmake -DCMAKE_SYSTEM_PROCESSOR=arm64 \
           -DCMAKE_CXX_FLAGS="-march=armv8-a" \
-          .. & \
+          .. && \
     make -j$(nproc)
