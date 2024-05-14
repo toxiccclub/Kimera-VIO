@@ -15,7 +15,6 @@ RUN apt-get update && \
       cmake \
       gfortran \
       git \
-      libtbb2-dev \
       libatlas-base-dev \
       libboost-all-dev \
       libeigen3-dev \
