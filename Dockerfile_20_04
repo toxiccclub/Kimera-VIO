@@ -120,7 +120,7 @@ make -j$(nproc) install
 # Загружаем версию разработки репозитория Open_GV
 RUN git clone https://github.com/toxiccclub/opengv.git && \
     cd opengv && \
-    git apply march_native_disable_2.patch && \
+    git apply march_native_disable.patch && \
     mkdir build && \
     cd build && \
     cmake -DCMAKE_SYSTEM_PROCESSOR=arm64 \
