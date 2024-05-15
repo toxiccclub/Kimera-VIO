@@ -12,7 +12,9 @@ RUN apt-get update && \
       apt-utils \
       cmake \
       wget \
-      pkgconfig && \
+      pkg-config \
+      tar \
+      xvfb && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
       
