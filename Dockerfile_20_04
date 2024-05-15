@@ -36,7 +36,7 @@ RUN  apt-get update && apt-get install -y --no-install-recommends \
       libgtk-3-dev \
       libparmetis-dev \
       libatlas-base-dev gfortran \
-      libtbb2-dev git && \
+      libtbb2-dev git ca-certificates && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
