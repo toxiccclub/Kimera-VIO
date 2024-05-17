@@ -88,6 +88,8 @@ RUN cd opencv/build && \
     -DWITH_VTK=ON \
     -DBUILD_VIZ=ON \
     -DOPENCV_EXTRA_MODULES_PATH=/opencv_contrib/modules \
+    -DEIGEN_INCLUDE_DIR=/gtsam/gtsam/3rdparty/Eigen \
+    -DEIGEN_INCLUDE_DIRS=/gtsam/gtsam/3rdparty/Eigen \
     .. && \
 make -j$(nproc) install
 
