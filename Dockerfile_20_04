@@ -49,8 +49,6 @@ RUN git clone https://github.com/borglab/gtsam.git && \
     cd build && \
     cmake -DCMAKE_INSTALL_PREFIX=/usr/local \
           -DGTSAM_BUILD_WITH_MARCH_NATIVE=OFF \
-          -DGTSAM_BUILD_TESTS=OFF \
-          -DGTSAM_BUILD_EXAMPLES_ALWAYS=OFF \
           -DCMAKE_BUILD_TYPE=Release \
           -DGTSAM_BUILD_UNSTABLE=ON \
           -DGTSAM_POSE3_EXPMAP=ON \
@@ -101,8 +99,8 @@ RUN git clone https://github.com/laurentkneip/opengv.git && \
     cmake \
           -DCMAKE_BUILD_TYPE=Release \
           -DCMAKE_INSTALL_PREFIX=/usr/local \
-          -DEIGEN_INCLUDE_DIR=/include/gtsam/gtsam/3rdparty/Eigen \
-          -DEIGEN_INCLUDE_DIRS=/include/gtsam/gtsam/3rdparty/Eigen \
+          -DEIGEN_INCLUDE_DIR=/gtsam/gtsam/3rdparty/Eigen \
+          -DEIGEN_INCLUDE_DIRS=/gtsam/gtsam/3rdparty/Eigen \
           .. && \
     make -j$(nproc) install
 
