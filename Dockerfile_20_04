@@ -101,8 +101,8 @@ RUN git clone https://github.com/laurentkneip/opengv.git && \
     cmake \
           -DCMAKE_BUILD_TYPE=Release \
           -DCMAKE_INSTALL_PREFIX=/usr/local \
-          -DEIGEN_INCLUDE_DIR=/gtsam/gtsam/3rdparty/Eigen \
-          -DEIGEN_INCLUDE_DIRS=/gtsam/gtsam/3rdparty/Eigen \
+          -DEIGEN_INCLUDE_DIR=/include/gtsam/gtsam/3rdparty/Eigen \
+          -DEIGEN_INCLUDE_DIRS=/include/gtsam/gtsam/3rdparty/Eigen \
           .. && \
     make -j$(nproc) install
 
@@ -139,5 +139,7 @@ RUN git clone https://github.com/MIT-SPARK/Kimera-VIO.git && \
     mkdir build && \
     cd build && \
     cmake \
+          -DCMAKE_INSTALL_PREFIX=/usr/local \
+          -DCMAKE_BUILD_TYPE=Release \
           .. && \
     make -j 4
