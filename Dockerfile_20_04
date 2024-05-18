@@ -35,7 +35,7 @@ RUN  apt-get update && apt-get install -y --no-install-recommends \
       libjpeg-dev \
       libpng-dev \
       libtiff-dev \
-      libvtk7-dev \
+      libvtk9-dev \
       libgtk-3-dev \
       libparmetis-dev \
       libatlas-base-dev \
