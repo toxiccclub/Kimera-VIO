@@ -101,12 +101,12 @@ RUN mkdir -p opencv/build && \
 # Настройка сборки OpenCV с помощью CMake
 RUN cd opencv/build && \
     cmake -D CMAKE_BUILD_TYPE=RELEASE \
-          -D CMAKE_INSTALL_PREFIX=$PWD/installation/OpenCV-4.5.5 \
+          -D CMAKE_INSTALL_PREFIX=/usr/local \
           -D INSTALL_C_EXAMPLES=ON \
           -D INSTALL_PYTHON_EXAMPLES=ON \
           -D WITH_TBB=ON \
           -D WITH_V4L=ON \
-          -D OPENCV_PYTHON3_INSTALL_PATH=$PWD/installation/OpenCV-4.5.5-py3/lib/python3.5/site-packages \
+          -D OPENCV_PYTHON3_INSTALL_PATH=/usr/local
           -D WITH_QT=ON \
           -D WITH_OPENGL=ON \
           -D OPENCV_EXTRA_MODULES_PATH=../../opencv_contrib/modules \
@@ -134,7 +134,6 @@ RUN git clone https://github.com/dorian3d/DBoW2.git && \
     cd build && \
     cmake -DCMAKE_INSTALL_PREFIX=/usr/local \
           -DCMAKE_BUILD_TYPE=Release \
-          -DCMAKE_PREFIX_PATH=/usr/local \
           .. && \
     make -j$(nproc) install
 
