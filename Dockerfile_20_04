@@ -40,7 +40,7 @@ RUN  apt-get update && apt-get install -y --no-install-recommends \
       libparmetis-dev \
       libatlas-base-dev \
       gfortran \
-      libtbb2-dev \
+      libtbb-dev \
       git \
       ca-certificates && \
     apt-get clean && \
