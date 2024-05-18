@@ -110,8 +110,9 @@ RUN cd opencv/build && \
           -D WITH_QT=ON \
           -D WITH_OPENGL=ON \
           -D OPENCV_EXTRA_MODULES_PATH=../../opencv_contrib/modules \
+          -D WITH_VTK=ON \
+          -D BUILD_opencv_viz=ON \
           -D BUILD_EXAMPLES=ON .. && \
-          -DWITH_VTK=ON \
     make -j$(nproc) install
 
 
