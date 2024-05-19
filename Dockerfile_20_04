@@ -15,8 +15,7 @@ RUN apt-get update && \
       pkg-config \
       tar \
       xvfb \
-      build-essential \
-      unzip && \
+      build-essential unzip &&\
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
       
@@ -32,17 +31,12 @@ RUN wget --no-check-certificate https://boostorg.jfrog.io/artifactory/main/relea
 ENV BOOST_ROOT /usr/local/boost
 
 RUN  apt-get update && apt-get install -y --no-install-recommends \
-      libjpeg-dev \
-      libpng-dev \
-      libtiff-dev \
+      libjpeg-dev libpng-dev libtiff-dev \
       libvtk7-dev \
       libgtk-3-dev \
       libparmetis-dev \
-      libatlas-base-dev \
-      gfortran \
-      libtbb2-dev \
-      git \
-      ca-certificates && \
+      libatlas-base-dev gfortran \
+      libtbb2-dev git ca-certificates && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
@@ -50,11 +44,13 @@ RUN  apt-get update && apt-get install -y --no-install-recommends \
 ADD https://api.github.com/repos/borglab/gtsam/git/refs/heads/develop version.json
 RUN git clone https://github.com/borglab/gtsam.git && \
     cd gtsam && \
-    git checkout 4.1.1 && \
     mkdir build && \
     cd build && \
-    cmake -DCMAKE_INSTALL_PREFIX=/usr/local \
+    cmake \
+          -DCMAKE_INSTALL_PREFIX=/usr/local \
           -DGTSAM_BUILD_WITH_MARCH_NATIVE=OFF \
+          -DGTSAM_BUILD_TESTS=ON \
+          -DGTSAM_BUILD_EXAMPLES_ALWAYS=OFF \
           -DCMAKE_BUILD_TYPE=Release \
           -DGTSAM_BUILD_UNSTABLE=ON \
           -DGTSAM_POSE3_EXPMAP=ON \
@@ -62,36 +58,24 @@ RUN git clone https://github.com/borglab/gtsam.git && \
           -DGTSAM_TANGENT_PREINTEGRATION=OFF \
           -DGTSAM_USE_SYSTEM_EIGEN=OFF \
           .. && \
+    make -j $(nproc) check && \
     make -j$(nproc) install
 
 # Установка зависимостей OpenCV
 RUN apt-get update && \
     apt-get install -y \
-      libjpeg-dev \
-      libpng-dev \
-      libtiff-dev \
-      libavcodec-dev \
-      libavformat-dev \
-      libswscale-dev \
-      libv4l-dev \
-      libxvidcore-dev \
-      libx264-dev \
-      libopenexr-dev \
-      libatlas-base-dev \
-      gfortran \
-      python3-dev \
-      python3-numpy \
-      libqt5opengl5-dev \
-      libglew-dev && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
+    libopenjpip7 \
+    libopenjp2-tools \
+    libopenjpip-dec-server \
+    libopenjpip-server
 
 # Клонирование репозиториев OpenCV и OpenCV_contrib
 RUN git clone https://github.com/opencv/opencv.git && \
     git clone https://github.com/opencv/opencv_contrib.git && \
     cd opencv_contrib && \
     git checkout tags/4.5.5 && \
-    cd ../opencv && \
+    cd .. && \
+    cd opencv && \
     git checkout tags/4.5.5
 
 # Создание и переход в каталог сборки
@@ -100,22 +84,22 @@ RUN mkdir -p opencv/build && \
 
 # Настройка сборки OpenCV с помощью CMake
 RUN cd opencv/build && \
-    cmake -D CMAKE_BUILD_TYPE=RELEASE \
-          -D CMAKE_INSTALL_PREFIX=/usr/local \
-          -D WITH_VTK=ON \
-          -DWITH_TBB=ON \
-          -D BUILD_opencv_viz=ON \
-          -D OPENCV_EXTRA_MODULES_PATH=../../opencv_contrib/modules \
-           .. && \
-    make -j$(nproc) install
-
+    cmake \
+    -DCMAKE_INSTALL_PREFIX=/usr/local \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DWITH_TBB=ON \
+    -DWITH_VTK=ON \
+    -DOPENCV_EXTRA_MODULES_PATH=/opencv_contrib/modules \
+    .. && \
+make -j$(nproc) install
 
 # Загружаем версию разработки репозитория Open_GV
 RUN git clone https://github.com/laurentkneip/opengv.git && \
     cd opengv && \
     mkdir build && \
     cd build && \
-    cmake -DCMAKE_BUILD_TYPE=Release \
+    cmake \
+          -DCMAKE_BUILD_TYPE=Release \
           -DCMAKE_INSTALL_PREFIX=/usr/local \
           -DEIGEN_INCLUDE_DIR=/gtsam/gtsam/3rdparty/Eigen \
           -DEIGEN_INCLUDE_DIRS=/gtsam/gtsam/3rdparty/Eigen \
@@ -127,7 +111,8 @@ RUN git clone https://github.com/dorian3d/DBoW2.git && \
     cd DBoW2 && \
     mkdir build && \
     cd build && \
-    cmake -DCMAKE_INSTALL_PREFIX=/usr/local \
+    cmake \
+          -DCMAKE_INSTALL_PREFIX=/usr/local \
           -DCMAKE_BUILD_TYPE=Release \
           .. && \
     make -j$(nproc) install
@@ -137,12 +122,13 @@ RUN git clone https://github.com/MIT-SPARK/Kimera-RPGO.git && \
     cd Kimera-RPGO && \
     mkdir build && \
     cd build && \
-    cmake -DCMAKE_INSTALL_PREFIX=/usr/local \
+    cmake \
+          -DCMAKE_INSTALL_PREFIX=/usr/local \
           -DCMAKE_BUILD_TYPE=Release \
           ..  && \
     make -j$(nproc) install
 
-RUN apt-get update && apt-get install -y \
+RUN apt-get update && apt-get install -y\
       libgflags-dev \
       libgoogle-glog-dev && \
     apt-get clean && \
@@ -154,4 +140,4 @@ RUN git clone https://github.com/MIT-SPARK/Kimera-VIO.git && \
     cd build && \
     cmake \
           .. && \
-    make -j 2
+    make -j 4
