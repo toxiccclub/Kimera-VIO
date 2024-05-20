@@ -21,8 +21,8 @@ RUN apt-get update && \
       
 # Скачиваем и устанавливаем Boost
 # Скачиваем и устанавливаем Boost
-RUN wget --no-check-certificate https://boostorg.jfrog.io/artifactory/main/release/1.82.0/source/boost_1_82_0.tar.gz && \
-    tar xf boost_1_82_0.tar.gz && \
+RUN wget --no-check-certificate https://boostorg.jfrog.io/artifactory/main/release/1.82.0/source/boost_1_82_0.tar.bz2 && \
+    tar --bzip2 xf boost_1_82_0.tar.bz2 && \
     rm boost_1_82_0.tar.gz && \
     cd boost_1_82_0 && \
     ./bootstrap.sh --prefix=/usr/local/boost --with-libraries=all && \
