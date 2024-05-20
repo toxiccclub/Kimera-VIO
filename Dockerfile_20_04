@@ -15,7 +15,20 @@ RUN apt-get update && \
       pkg-config \
       tar \
       xvfb \
-      build-essential unzip bzip2 &&\
+      build-essential unzip bzip2 \
+      libjpeg-dev libpng-dev libtiff-dev \
+      libvtk7-dev \
+      libgtk-3-dev \
+      libparmetis-dev \
+      libatlas-base-dev gfortran \
+      libtbb2-dev git ca-certificates \
+      libopenjpip7 \
+      libopenjp2-tools \
+      libopenjpip-dec-server \
+      libopenjpip-server \
+      libgflags-dev \
+      python3 \
+      libgoogle-glog-dev && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
       
@@ -24,23 +37,13 @@ RUN apt-get update && \
 RUN wget --no-check-certificate https://boostorg.jfrog.io/artifactory/main/release/1.82.0/source/boost_1_82_0.tar.bz2 && \
     tar -xjf boost_1_82_0.tar.bz2 && \
     cd boost_1_82_0 && \
-    ./bootstrap.sh --prefix=/usr/local --with-libraries=all && \
+    ./bootstrap.sh --prefix=/usr/local --with-concept_check && \
     ./b2 install -j$(nproc) && \
     cd .. && \
     rm -rf boost_1_82_0
 
 # Экспортируем переменную среды BOOST_ROOT
 ENV BOOST_ROOT /usr/local
-
-RUN  apt-get update && apt-get install -y --no-install-recommends \
-      libjpeg-dev libpng-dev libtiff-dev \
-      libvtk7-dev \
-      libgtk-3-dev \
-      libparmetis-dev \
-      libatlas-base-dev gfortran \
-      libtbb2-dev git ca-certificates && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
 
 # Клонируем репозиторий GTSAM и устанавливаем его
 ADD https://api.github.com/repos/borglab/gtsam/git/refs/heads/develop version.json
@@ -63,13 +66,6 @@ RUN git clone https://github.com/borglab/gtsam.git && \
     make -j $(nproc) check && \
     make -j$(nproc) install
 
-# Установка зависимостей OpenCV
-RUN apt-get update && \
-    apt-get install -y \
-    libopenjpip7 \
-    libopenjp2-tools \
-    libopenjpip-dec-server \
-    libopenjpip-server
 
 # Клонирование репозиториев OpenCV и OpenCV_contrib
 RUN git clone https://github.com/opencv/opencv.git && \
@@ -128,7 +124,7 @@ RUN git clone https://github.com/MIT-SPARK/Kimera-RPGO.git && \
           -DCMAKE_INSTALL_PREFIX=/usr/local \
           -DCMAKE_BUILD_TYPE=Release \
           ..  && \
-    make -j$(nproc) install
+    make -j$(nproc)
 
 RUN apt-get update && apt-get install -y\
       libgflags-dev \
