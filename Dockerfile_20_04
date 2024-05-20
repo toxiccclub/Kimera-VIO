@@ -48,8 +48,6 @@ RUN echo "/usr/local/boost/lib" > /etc/ld.so.conf.d/boost.conf && \
 # Экспортируем переменную среды BOOST_ROOT
 ENV BOOST_ROOT /usr/local/boost
 
-# Клонируем репозиторий GTSAM и устанавливаем его
-ADD https://api.github.com/repos/borglab/gtsam/git/refs/heads/develop version.json
 RUN git clone https://github.com/borglab/gtsam.git && \
     cd gtsam && \
     git checkout tags/4.1.1 && \
