@@ -782,7 +782,7 @@ TEST_F(TestTracker, geometricOutlierRejection2d2d) {
       TrackingStatus tracking_status;
       Pose3 estimated_pose;
       tie(tracking_status, estimated_pose) =
-          VIO::Tracker::geometricOutlierRejection2d2d(ref_frame.get(),
+          tracker.geometricOutlierRejection2d2d(ref_frame.get(),
                                                 cur_frame.get());
 
       EXPECT_EQ(tracking_status, TrackingStatus::VALID);
@@ -981,7 +981,7 @@ TEST_F(TestTracker, geometricOutlierRejection3d3d) {
       TrackingStatus tracking_status;
       Pose3 estimated_pose;
       tie(tracking_status, estimated_pose) =
-          VIO::Tracker::geometricOutlierRejection3d3d(ref_stereo_frame.get(),
+          tracker.geometricOutlierRejection3d3d(ref_stereo_frame.get(),
                                                 cur_stereo_frame.get());
 
       // Check the correctness of the outlier rejection!
