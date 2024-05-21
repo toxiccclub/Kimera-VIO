@@ -1218,7 +1218,7 @@ TEST_F(TestTracker, getPoint3AndCovariance) {
   // use function to get actual answer
   Vector3 f_ref_i_expected, f_ref_i_actual;
   Matrix3 cov_ref_i_expected, cov_ref_i_actual;
-  tie(f_ref_i_actual, cov_ref_i_actual) = tracker.getPoint3AndCovariance(
+  tie(f_ref_i_actual, cov_ref_i_actual) = tracker_.getPoint3AndCovariance(
       *ref_stereo_frame, stereoCam, pointId, stereoPtCov);
 
   // use monte carlo method to get expected answer
@@ -1368,7 +1368,7 @@ TEST_F(TestTracker, FindMatchingKeypoints) {
   random_shuffle(cur_frame->landmarks_.begin(), cur_frame->landmarks_.end());
 
   vector<pair<size_t, size_t>> matches_ref_cur;
-  VIO::Tracker:findMatchingKeypoints(*ref_frame, *cur_frame, &matches_ref_cur);
+  VIO::Tracker::findMatchingKeypoints(*ref_frame, *cur_frame, &matches_ref_cur);
 
   // Check the correctness of matches_ref_cur
   EXPECT_EQ(matches_ref_cur.size(), num_landmarks_common);
