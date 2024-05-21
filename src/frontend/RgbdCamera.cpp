@@ -16,6 +16,7 @@
 #include "kimera-vio/frontend/RgbdCamera.h"
 
 #include "kimera-vio/frontend/Camera.h"
+#include <opencv2/opencv.hpp>
 #include <opencv2/viz.hpp>
 
 namespace VIO {
@@ -51,7 +52,7 @@ void convertToPcl(const cv::Mat& intensity_img,
   cv::Mat_<cv::Point3f> cloud_out =
       cv::Mat(img_rows, img_cols, CV_32FC3, cv::Scalar(0.0, 0.0, 0.0));
   cv::Mat colors_out =
-      cv::Mat(img_rows, img_cols, CV_8UC3, cv::viz::Color::red());
+      cv::Mat(img_rows, img_cols, CV_8UC3, cv::vizualization::Color::red());
 
   for (int v = 0u; v < img_rows; ++v) {
     for (int u = 0u; u < img_cols; ++u) {
