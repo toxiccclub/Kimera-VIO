@@ -12,6 +12,7 @@
  */
 
 #include <gtest/gtest.h>
+#include <opencv2/opencv.hpp>
 
 #include "kimera-vio/frontend/CameraParams.h"
 #include "kimera-vio/frontend/DepthFrame.h"
