@@ -17,6 +17,8 @@
 #include <gflags/gflags.h>
 #include <glog/logging.h>
 #include <gtest/gtest.h>
+#include <opencv2/opencv.hpp>
+#include <opencv2/video/tracking.hpp>
 
 #include <algorithm>
 #include <cstdlib>
