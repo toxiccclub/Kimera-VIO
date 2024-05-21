@@ -1,5 +1,5 @@
 # Указываем базовый образ для архитектуры ARM64
-FROM --platform=linux/arm64 ubuntu:22.04
+FROM ubuntu:22.04
 
 # Метаданные об обслуживании образа
 LABEL maintainer="mabate@mit.edu"
@@ -37,7 +37,7 @@ RUN wget --no-check-certificate https://boostorg.jfrog.io/artifactory/main/relea
     tar -xjf boost_1_82_0.tar.bz2 && \
     cd boost_1_82_0 &&  \
     ./bootstrap.sh --prefix=/usr/local/boost --with-libraries=all && \
-    ./b2 toolset=gcc architecture=arm address-model=64 install -j$(nproc) && \
+    ./b2 install -j$(nproc) && \
     cd .. && \
     rm -rf boost_1_82_0
 
@@ -53,7 +53,6 @@ RUN git clone https://github.com/borglab/gtsam.git && \
     mkdir build && \
     cd build && \
     cmake \
-          -DCMAKE_SYSTEM_PROCESSOR=arm64 \
           -DCMAKE_INSTALL_PREFIX=/usr/local \
           -DGTSAM_BUILD_WITH_MARCH_NATIVE=OFF \
           -DCMAKE_BUILD_TYPE=Release \
@@ -83,7 +82,6 @@ RUN mkdir -p opencv/build && \
 # Настройка сборки OpenCV с помощью CMake
 RUN cd opencv/build && \
     cmake \
-    -DCMAKE_SYSTEM_PROCESSOR=arm64 \
     -DCMAKE_INSTALL_PREFIX=/usr/local \
     -DCMAKE_BUILD_TYPE=Release \
     -DWITH_TBB=ON \
@@ -99,7 +97,6 @@ RUN git clone https://github.com/laurentkneip/opengv.git && \
     mkdir build && \
     cd build && \
     cmake \
-          -DCMAKE_SYSTEM_PROCESSOR=arm64 \
           -DCMAKE_BUILD_TYPE=Release \
           -DCMAKE_INSTALL_PREFIX=/usr/local \
           -DEIGEN_INCLUDE_DIR=/gtsam/gtsam/3rdparty/Eigen \
@@ -113,7 +110,6 @@ RUN git clone https://github.com/dorian3d/DBoW2.git && \
     mkdir build && \
     cd build && \
     cmake \
-          -DCMAKE_SYSTEM_PROCESSOR=arm64 \
           -DCMAKE_INSTALL_PREFIX=/usr/local \
           -DCMAKE_BUILD_TYPE=Release \
           .. && \
@@ -125,7 +121,6 @@ RUN git clone https://github.com/MIT-SPARK/Kimera-RPGO.git && \
     mkdir build && \
     cd build && \
     cmake \
-          -DCMAKE_SYSTEM_PROCESSOR=arm64 \
           -DCMAKE_INSTALL_PREFIX=/usr/local \
           -DCMAKE_BUILD_TYPE=Release \
           ..  && \
