@@ -131,5 +131,6 @@ RUN git clone https://github.com/toxiccclub/Kimera-VIO.git && \
     mkdir build && \
     cd build && \
     cmake \
+          -DCMAKE_INSTALL_PREFIX=/usr/local \
           .. && \
     make -j 4
