@@ -1453,7 +1453,7 @@ TEST_F(TestTracker, FindMatchingStereoKeypoints) {
     } else {
       cur_stereo_frame->right_keypoints_rectified_.at(i).first =
           KeypointStatus::NO_RIGHT_RECT;
-    }testTracker.cpp
+    }testTracker
   }
 
   vector<pair<size_t, size_t>> matches_ref_cur;
