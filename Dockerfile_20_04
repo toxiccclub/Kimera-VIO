@@ -102,8 +102,8 @@ RUN git clone https://github.com/laurentkneip/opengv.git && \
     cmake \
           -DCMAKE_BUILD_TYPE=Release \
           -DCMAKE_INSTALL_PREFIX=/usr/local \
-          -DEIGEN_INCLUDE_DIR=../../gtsam/gtsam/3rdparty/Eigen \
-          -DEIGEN_INCLUDE_DIRS=../../gtsam/gtsam/3rdparty/Eigen \
+          -DEIGEN_INCLUDE_DIR=root/gtsam/gtsam/3rdparty/Eigen \
+          -DEIGEN_INCLUDE_DIRS=root/gtsam/gtsam/3rdparty/Eigen \
           .. && \
     make -j$(nproc) install
 
