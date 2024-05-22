@@ -89,7 +89,7 @@ RUN cd opencv/build && \
     -DCMAKE_BUILD_TYPE=Release \
     -DWITH_TBB=ON \
     -DWITH_VTK=ON \
-    -DOPENCV_EXTRA_MODULES_PATH=/opencv_contrib/modules \
+    -DOPENCV_EXTRA_MODULES_PATH=../../opencv_contrib/modules \
     .. && \
 make -j$(nproc) install && \
 ldconfig
