@@ -51,7 +51,7 @@ RUN apt-get update && \
     #ldconfig
 
 # Экспортируем переменную среды BOOST_ROOT
-#ENV BOOST_ROOT /usr/local/boost
+ENV BOOST_ROOT /usr/local/boost
 
 RUN git clone https://github.com/borglab/gtsam.git && \
     cd gtsam && \
