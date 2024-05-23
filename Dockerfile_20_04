@@ -24,31 +24,28 @@ RUN apt-get update && \
       libgtk-3-dev \
       libparmetis-dev \
       libatlas-base-dev gfortran \
-      git ca-certificates \
+      libtbb2-dev git ca-certificates \
       libopenjpip7 \
       libopenjp2-tools \
       libopenjpip-dec-server \
       libopenjpip-server \
       libgflags-dev \
-      libmetis-dev \
-      libopencv-dev \
-      libopencv-contrib-dev \
       python3 \
       libgoogle-glog-dev && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
 # Скачиваем и устанавливаем Boost
-#RUN wget --no-check-certificate https://boostorg.jfrog.io/artifactory/main/release/1.82.0/source/boost_1_82_0.tar.bz2 && \
-    #tar -xjf boost_1_82_0.tar.bz2 && \
-    #cd boost_1_82_0 &&  \
-    #./bootstrap.sh --prefix=/usr/local/boost --with-libraries=all && \
-    #./b2 install -j$(nproc) && \
-    #cd .. && \
-    #rm -rf boost_1_82_0
+RUN wget --no-check-certificate https://boostorg.jfrog.io/artifactory/main/release/1.82.0/source/boost_1_82_0.tar.bz2 && \
+    tar -xjf boost_1_82_0.tar.bz2 && \
+    cd boost_1_82_0 &&  \
+    ./bootstrap.sh --prefix=/usr/local/boost --with-libraries=all && \
+    ./b2 install -j$(nproc) && \
+    cd .. && \
+    rm -rf boost_1_82_0
 
 #RUN echo "/usr/local/boost/lib" > /etc/ld.so.conf.d/boost.conf && \
-    #ldconfig
+    ldconfig
 
 # Экспортируем переменную среды BOOST_ROOT
 ENV BOOST_ROOT /usr/local/boost
@@ -82,11 +79,11 @@ RUN git clone https://github.com/opencv/opencv.git && \
     git checkout tags/4.5.5
 
 # Создание и переход в каталог сборки
-RUN mkdir -p opencv/build && \
+RUN mkdir -p /root/opencv/build && \
     cd opencv/build
 
 # Настройка сборки OpenCV с помощью CMake
-RUN cd opencv/build && \
+RUN cd /root/opencv/build && \
     cmake \
     -DCMAKE_INSTALL_PREFIX=/usr/local \
     -DCMAKE_BUILD_TYPE=Release \
