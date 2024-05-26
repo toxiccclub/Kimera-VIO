@@ -1,4 +1,4 @@
-# Указываем базовый образ для архитектуры ARM64
+# Базовый образ для архитектуры ARM64
 FROM ubuntu:22.04
 
 # Метаданные об обслуживании образа
@@ -10,6 +10,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 ENV DIRPATH /root/
 WORKDIR $DIRPATH
 
+# Установка зависимостей
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
       apt-utils \
@@ -18,13 +19,20 @@ RUN apt-get update && \
       pkg-config \
       tar \
       xvfb \
-      build-essential unzip bzip2 \
-      libjpeg-dev libpng-dev libtiff-dev \
+      build-essential \
+      unzip \
+      bzip2 \
+      libjpeg-dev \
+      libpng-dev \
+      libtiff-dev \
       libvtk7-dev \
       libgtk-3-dev \
       libparmetis-dev \
-      libatlas-base-dev gfortran \
-      libtbb2-dev git ca-certificates \
+      libatlas-base-dev \
+      gfortran \
+      libtbb2 \
+      git \
+      ca-certificates \
       libopenjpip7 \
       libopenjp2-tools \
       libopenjpip-dec-server \
@@ -38,18 +46,18 @@ RUN apt-get update && \
 # Скачиваем и устанавливаем Boost
 RUN wget --no-check-certificate https://boostorg.jfrog.io/artifactory/main/release/1.82.0/source/boost_1_82_0.tar.bz2 && \
     tar -xjf boost_1_82_0.tar.bz2 && \
-    cd boost_1_82_0 &&  \
+    cd boost_1_82_0 && \
     ./bootstrap.sh --prefix=/usr/local/boost --with-libraries=all && \
     ./b2 install -j$(nproc) && \
     cd .. && \
-    rm -rf boost_1_82_0
-
-RUN echo "/usr/local/boost/lib" > /etc/ld.so.conf.d/boost.conf && \
+    rm -rf boost_1_82_0.tar.bz2 boost_1_82_0 && \
+    echo "/usr/local/boost/lib" > /etc/ld.so.conf.d/boost.conf && \
     ldconfig
 
 # Экспортируем переменную среды BOOST_ROOT
 ENV BOOST_ROOT /usr/local/boost
 
+# Клонирование и сборка GTSAM
 RUN git clone https://github.com/borglab/gtsam.git && \
     cd gtsam && \
     git checkout tags/4.1.1 && \
@@ -65,25 +73,22 @@ RUN git clone https://github.com/borglab/gtsam.git && \
           -DGTSAM_USE_SYSTEM_EIGEN=OFF \
           -DGTSAM_THROW_CHEIRALITY_EXCEPTION=OFF \
           .. && \
-    make -j $(nproc) check && \
-    make -j$(nproc) install
+    make -j$(nproc) check && \
+    make -j$(nproc) install && \
+    cd ../.. && \
+    rm -rf gtsam
 
-
-# Клонирование репозиториев OpenCV и OpenCV_contrib
+# Клонирование OpenCV и OpenCV_contrib
 RUN git clone https://github.com/opencv/opencv.git && \
     git clone https://github.com/opencv/opencv_contrib.git && \
     cd opencv_contrib && \
-    git checkout tags/4.5.5 && \
-    cd .. && \
-    cd opencv && \
-    git checkout tags/4.5.5
+    git checkout tags/4.7.0 && \
+    cd ../opencv && \
+    git checkout tags/4.7.0
 
-# Создание и переход в каталог сборки
+# Сборка и установка OpenCV
 RUN mkdir -p /root/opencv/build && \
-    cd opencv/build
-
-# Настройка сборки OpenCV с помощью CMake
-RUN cd /root/opencv/build && \
+    cd /root/opencv/build && \
     cmake \
     -DCMAKE_INSTALL_PREFIX=/usr/local \
     -DCMAKE_BUILD_TYPE=Release \
@@ -92,9 +97,11 @@ RUN cd /root/opencv/build && \
     -DOPENCV_EXTRA_MODULES_PATH=/root/opencv_contrib/modules \
     -DEIGEN_INCLUDE_PATH=/root/gtsam/gtsam/3rdparty/Eigen \
     .. && \
-make -j$(nproc) install
+    make -j$(nproc) install && \
+    cd /root && \
+    rm -rf opencv opencv_contrib
 
-# Загружаем версию разработки репозитория Open_GV
+# Клонирование, сборка и установка OpenGV
 RUN git clone https://github.com/laurentkneip/opengv.git && \
     cd opengv && \
     mkdir build && \
@@ -105,9 +112,11 @@ RUN git clone https://github.com/laurentkneip/opengv.git && \
           -DEIGEN_INCLUDE_DIR=/root/gtsam/gtsam/3rdparty/Eigen \
           -DEIGEN_INCLUDE_DIRS=/root/gtsam/gtsam/3rdparty/Eigen \
           .. && \
-    make -j$(nproc) install
+    make -j$(nproc) install && \
+    cd ../.. && \
+    rm -rf opengv
 
-# Клонируем репозиторий DBoW2 и устанавливаем его
+# Клонирование, сборка и установка DBoW2
 RUN git clone https://github.com/dorian3d/DBoW2.git && \
     cd DBoW2 && \
     mkdir build && \
@@ -116,9 +125,11 @@ RUN git clone https://github.com/dorian3d/DBoW2.git && \
           -DCMAKE_INSTALL_PREFIX=/usr/local \
           -DCMAKE_BUILD_TYPE=Release \
           .. && \
-    make -j$(nproc) install
+    make -j$(nproc) install && \
+    cd ../.. && \
+    rm -rf DBoW2
 
-# Загружаем версию разработки репозитория RobustPGO
+# Клонирование, сборка и установка Kimera-RPGO
 RUN git clone https://github.com/MIT-SPARK/Kimera-RPGO.git && \
     cd Kimera-RPGO && \
     mkdir build && \
@@ -127,12 +138,16 @@ RUN git clone https://github.com/MIT-SPARK/Kimera-RPGO.git && \
           -DCMAKE_INSTALL_PREFIX=/usr/local \
           -DCMAKE_BUILD_TYPE=Release \
           ..  && \
-    make -j$(nproc) install
+    make -j$(nproc) install && \
+    cd ../.. && \
+    rm -rf Kimera-RPGO
 
-RUN git clone https://github.com/toxiccclub/Kimera-VIO.git && \
+# Клонирование, сборка и установка Kimera-VIO
+RUN git clone https://github.com/MIT-SPARK/Kimera-VIO.git && \
     cd Kimera-VIO && \
     mkdir build && \
     cd build && \
-    cmake \
-          .. && \
-    make -j 4
+    cmake .. && \
+    make -j $(nproc) install && \
+    cd ../.. && \
+    rm -rf Kimera-VIO
