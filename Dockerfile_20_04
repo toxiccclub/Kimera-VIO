@@ -58,6 +58,7 @@ ENV BOOST_ROOT /usr/local/boost
 
 RUN git clone https://github.com/borglab/gtsam.git && \
     cd gtsam && \
+    git checkout tags/4.1.1 && \
     mkdir build && \
     cd build && \
     cmake \
@@ -94,8 +95,8 @@ RUN cd /root/opencv/build && \
     -DCMAKE_BUILD_TYPE=Release \
     -DWITH_TBB=ON \
     -DWITH_VTK=ON \
-    -DOPENCV_EXTRA_MODULES_PATH=/root/opencv_contrib/modules \
-    -DEIGEN_INCLUDE_PATH=/gtsam/gtsam/3rdparty/Eigen \
+    -DOPENCV_EXTRA_MODULES_PATH=$DIRPATH/opencv_contrib/modules \
+    -DEIGEN_INCLUDE_PATH=$DIRPATH/gtsam/gtsam/3rdparty/Eigen \
     .. && \
 make -j$(nproc) install
 
@@ -107,8 +108,8 @@ RUN git clone https://github.com/laurentkneip/opengv.git && \
     cmake \
           -DCMAKE_BUILD_TYPE=Release \
           -DCMAKE_INSTALL_PREFIX=/usr/local \
-          -DEIGEN_INCLUDE_DIR=/root/gtsam/gtsam/3rdparty/Eigen \
-          -DEIGEN_INCLUDE_DIRS=/root/gtsam/gtsam/3rdparty/Eigen \
+          -DEIGEN_INCLUDE_DIR=$DIRPATH/gtsam/gtsam/3rdparty/Eigen \
+          -DEIGEN_INCLUDE_DIRS=$DIRPATH/gtsam/gtsam/3rdparty/Eigen \
           .. && \
     make -j$(nproc) install
 
@@ -118,7 +119,7 @@ RUN git clone https://github.com/dorian3d/DBoW2.git && \
     mkdir build && \
     cd build && \
     cmake \
-          .. && \
+          -DCMAKE_INSTALL_PREFIX=/usr/local -DCMAKE_BUILD_TYPE=Release .. && \
     make -j$(nproc) install
 
 # Загружаем версию разработки репозитория RobustPGO
@@ -127,7 +128,7 @@ RUN git clone https://github.com/MIT-SPARK/Kimera-RPGO.git && \
     mkdir build && \
     cd build && \
     cmake \
-          ..  && \
+          -DCMAKE_INSTALL_PREFIX=/usr/local -DCMAKE_BUILD_TYPE=Release ..  && \
     make -j$(nproc) install
 
 RUN git clone https://github.com/MIT-SPARK/Kimera-VIO.git && \
