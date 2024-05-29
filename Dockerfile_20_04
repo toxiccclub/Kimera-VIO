@@ -56,6 +56,12 @@ RUN echo "/usr/local/boost/lib" > /etc/ld.so.conf.d/boost.conf && \
 # Экспортируем переменную среды BOOST_ROOT
 ENV BOOST_ROOT /usr/local/boost
 
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends  \
+    libeigen3-dev && \
+   apt-get clean && \
+   rm -rf /var/lib/apt/lists/*
+
 RUN git clone https://github.com/borglab/gtsam.git && \
     cd gtsam && \
     git checkout tags/4.1.1 && \
