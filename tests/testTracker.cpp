@@ -38,6 +38,8 @@ DECLARE_bool(display);
 
 using namespace gtsam;
 using namespace std;
+using namespace cv;
+using namespace VIO;
 
 /* ************************************************************************** */
 // Testing data
