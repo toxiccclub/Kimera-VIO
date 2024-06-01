@@ -105,7 +105,8 @@ RUN cd opencv/build && \
     -D BUILD_opencv_python2=OFF \
     -D BUILD_opencv_python3=OFF \
     -DOPENCV_EXTRA_MODULES_PATH=$DIRPATH/opencv_contrib/modules \
-    -DEIGEN_INCLUDE_PATH=$DIRPATH/gtsam/gtsam/3rdparty/Eigen \
+    -DEIGEN_INCLUDE_DIR=$DIRPATH/gtsam/gtsam/3rdparty/Eigen \
+    -DEIGEN_INCLUDE_DIRS=$DIRPATH/gtsam/gtsam/3rdparty/Eigen \
     .. && \
 make -j$(nproc) install
 
