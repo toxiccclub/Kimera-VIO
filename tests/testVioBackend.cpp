@@ -33,6 +33,7 @@
 #include "kimera-vio/imu-frontend/ImuFrontendParams.h"
 #include "kimera-vio/initial/InitializationBackend.h"
 #include "kimera-vio/utils/ThreadsafeImuBuffer.h"
+#include "kimera-vio/frontend/Tracker.h"
 
 DECLARE_string(test_data_path);
 
