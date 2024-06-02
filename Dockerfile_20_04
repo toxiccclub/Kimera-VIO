@@ -114,6 +114,7 @@ make -j$(nproc) install
 # Загружаем версию разработки репозитория Open_GV
 RUN git clone https://github.com/laurentkneip/opengv.git && \
     cd opengv && \
+    git apply march_native_disable.patch && \
     mkdir build && \
     cd build && \
     cmake \
