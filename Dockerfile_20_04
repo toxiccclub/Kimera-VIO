@@ -47,8 +47,7 @@ RUN wget --no-check-certificate https://boostorg.jfrog.io/artifactory/main/relea
     cd boost_1_82_0 &&  \
     ./bootstrap.sh --prefix=/usr/local/boost --with-libraries=all && \
     ./b2 install -j$(nproc) && \
-    cd .. && \
-    rm -rf boost_1_82_0
+    cd .. 
 
 RUN echo "/usr/local/boost/lib" > /etc/ld.so.conf.d/boost.conf && \
     ldconfig
