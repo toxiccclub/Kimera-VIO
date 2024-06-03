@@ -51,8 +51,8 @@ RUN git clone https://github.com/opencv/opencv.git && \
     -DWITH_TBB=ON \
     -DWITH_VTK=ON \
     -DOPENCV_EXTRA_MODULES_PATH=$DIRPATH/opencv_contrib/modules \
-    #.. && \
-#make -j$(nproc) install
+    .. && \
+make -j$(nproc) install
 
 # Скачиваем и устанавливаем Boost
 RUN wget --no-check-certificate https://boostorg.jfrog.io/artifactory/main/release/1.82.0/source/boost_1_82_0.tar.bz2 && \
