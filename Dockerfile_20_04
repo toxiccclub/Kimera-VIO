@@ -35,11 +35,24 @@ RUN apt-get update && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-# Обновляем менеджер пакетов и устанавливаем pip
-RUN apt-get update \
-    && apt-get install -y python3-pip \
-    && pip3 install --upgrade pip \
-    && pip3 install numpy
+# Клонирование репозиториев OpenCV и OpenCV_contrib
+RUN git clone https://github.com/opencv/opencv.git && \
+    git clone https://github.com/opencv/opencv_contrib.git && \
+    cd opencv_contrib && \
+    git checkout tags/4.5.5 && \
+    cd .. && \
+    cd opencv && \
+    git checkout tags/4.5.5 && \
+    mkdir build && \
+    cd build && \
+    cmake \
+    -DCMAKE_INSTALL_PREFIX=/usr/local \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DWITH_TBB=ON \
+    -DWITH_VTK=ON \
+    -DOPENCV_EXTRA_MODULES_PATH=$DIRPATH/opencv_contrib/modules \
+    #.. && \
+#make -j$(nproc) install
 
 # Скачиваем и устанавливаем Boost
 RUN wget --no-check-certificate https://boostorg.jfrog.io/artifactory/main/release/1.82.0/source/boost_1_82_0.tar.bz2 && \
@@ -54,12 +67,6 @@ RUN echo "/usr/local/boost/lib" > /etc/ld.so.conf.d/boost.conf && \
 
 # Экспортируем переменную среды BOOST_ROOT
 ENV BOOST_ROOT /usr/local/boost
-
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends  \
-    libeigen3-dev && \
-   apt-get clean && \
-   rm -rf /var/lib/apt/lists/*
 
 ADD https://api.github.com/repos/borglab/gtsam/git/refs/heads/develop version.json
 RUN git clone https://github.com/borglab/gtsam.git && \
@@ -79,25 +86,6 @@ RUN git clone https://github.com/borglab/gtsam.git && \
           .. && \
     make -j $(nproc) check && \
     make -j$(nproc) install
-
-# Клонирование репозиториев OpenCV и OpenCV_contrib
-RUN git clone https://github.com/opencv/opencv.git && \
-    git clone https://github.com/opencv/opencv_contrib.git && \
-    cd opencv_contrib && \
-    git checkout tags/4.5.5 && \
-    cd .. && \
-    cd opencv && \
-    git checkout tags/4.5.5 && \
-    mkdir build && \
-    cd build && \
-    cmake \
-    -DCMAKE_INSTALL_PREFIX=/usr/local \
-    -DCMAKE_BUILD_TYPE=Release \
-    -DWITH_TBB=ON \
-    -DWITH_VTK=ON \
-    -DOPENCV_EXTRA_MODULES_PATH=$DIRPATH/opencv_contrib/modules \
-    #.. && \
-#make -j$(nproc) install
 
 # Загружаем версию разработки репозитория Open_GV
 RUN git clone https://github.com/marcusabate/opengv.git && \
