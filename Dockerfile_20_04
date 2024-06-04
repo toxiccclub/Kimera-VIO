@@ -35,25 +35,6 @@ RUN apt-get update && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-# Клонирование репозиториев OpenCV и OpenCV_contrib
-RUN git clone https://github.com/opencv/opencv.git && \
-    git clone https://github.com/opencv/opencv_contrib.git && \
-    cd opencv_contrib && \
-    git checkout tags/4.5.5 && \
-    cd .. && \
-    cd opencv && \
-    git checkout tags/4.5.5 && \
-    mkdir build && \
-    cd build && \
-    cmake \
-    -DCMAKE_INSTALL_PREFIX=/usr/local \
-    -DCMAKE_BUILD_TYPE=Release \
-    -DWITH_TBB=ON \
-    -DWITH_VTK=ON \
-    -DOPENCV_EXTRA_MODULES_PATH=$DIRPATH/opencv_contrib/modules \
-    .. && \
-make -j$(nproc) install
-
 # Скачиваем и устанавливаем Boost
 RUN wget --no-check-certificate https://boostorg.jfrog.io/artifactory/main/release/1.82.0/source/boost_1_82_0.tar.bz2 && \
     tar -xjf boost_1_82_0.tar.bz2 && \
@@ -87,10 +68,28 @@ RUN git clone https://github.com/borglab/gtsam.git && \
     make -j $(nproc) check && \
     make -j$(nproc) install
 
+# Клонирование репозиториев OpenCV и OpenCV_contrib
+RUN git clone https://github.com/opencv/opencv.git && \
+    git clone https://github.com/opencv/opencv_contrib.git && \
+    cd opencv_contrib && \
+    git checkout tags/4.5.5 && \
+    cd .. && \
+    cd opencv && \
+    git checkout tags/4.5.5 && \
+    mkdir build && \
+    cd build && \
+    cmake \
+    -DCMAKE_INSTALL_PREFIX=/usr/local \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DWITH_TBB=ON \
+    -DWITH_VTK=ON \
+    -DOPENCV_EXTRA_MODULES_PATH=$DIRPATH/opencv_contrib/modules \
+    .. && \
+make -j$(nproc) install
+
 # Загружаем версию разработки репозитория Open_GV
-RUN git clone https://github.com/marcusabate/opengv.git && \
+RUN git clone https://github.com/laurentkneip/opengv.git && \
     cd opengv && \
-    git apply march_native_disable.patch && \
     mkdir build && \
     cd build && \
     cmake \
@@ -121,7 +120,7 @@ RUN git clone https://github.com/MIT-SPARK/Kimera-RPGO.git && \
     mkdir build && \
     cd build && \
     cmake \
-          -DCMAKE_INSTALL_PREFIX=/usr/local -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_STANDARD=14 ..  && \
+          -DCMAKE_INSTALL_PREFIX=/usr/local -DCMAKE_BUILD_TYPE=Release && \
     make -j$(nproc) install
 
 RUN git clone https://github.com/toxiccclub/Kimera-VIO.git && \
@@ -129,5 +128,5 @@ RUN git clone https://github.com/toxiccclub/Kimera-VIO.git && \
     mkdir build && \
     cd build && \
     cmake \
-          -DCMAKE_CXX_STANDARD=14 .. && \
+          .. && \
     make -j 4
