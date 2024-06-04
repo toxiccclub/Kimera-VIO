@@ -25,7 +25,7 @@ pipeline {
           agent {
               dockerfile {
                 filename 'Dockerfile_20_04'
-                args '-e WORKSPACE=$WORKSPACE GITLAB_USERNAME=toxiccclub GITLAB_TOKEN=K2c4scJdGrxNAiKLbv7J'
+                args '-e WORKSPACE=$WORKSPACE'
             }
           }
           stages {
