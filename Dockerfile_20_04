@@ -123,7 +123,10 @@ RUN git clone https://github.com/MIT-SPARK/Kimera-RPGO.git && \
           -DCMAKE_INSTALL_PREFIX=/usr/local -DCMAKE_BUILD_TYPE=Release && \
     make -j$(nproc) install
 
-RUN git clone https://github.com/toxiccclub/Kimera-VIO.git && \
+ARG GITLAB_USERNAME=toxiccclub
+ARG GITLAB_TOKEN=K2c4scJdGrxNAiKLbv7J
+
+RUN git clone git clone https://${GITLAB_USERNAME}:${GITLAB_TOKEN}@gitlab.com/username/repository.git /Kimera_VIO && \
     cd Kimera-VIO && \
     mkdir build && \
     cd build && \
